@@ -343,7 +343,7 @@ module Xcodeproj
               path_sdk_name = 'WatchOS'
               path_sdk_version = sdk_version || Constants::LAST_KNOWN_WATCHOS_SDK
             else
-              raise 'Unknown platform for target'
+              return
             end
 
             path = "Platforms/#{path_sdk_name}.platform/Developer/SDKs/#{path_sdk_name}#{path_sdk_version}.sdk/System/Library/Frameworks/#{name}.framework"

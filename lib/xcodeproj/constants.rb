@@ -343,6 +343,9 @@ module Xcodeproj
         'INSTALL_PATH'                      => '$(LOCAL_LIBRARY_DIR)/Bundles',
         'SDKROOT'                           => 'macosx',
       }.freeze,
+      [:iap_content] => {
+        'INSTALL_PATH'                      => '$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent'
+      }
     }.freeze
 
     # @return [Hash] The default build settings for a new project.
