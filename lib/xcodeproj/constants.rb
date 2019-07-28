@@ -158,6 +158,7 @@ module Xcodeproj
       :messages_extension   => 'com.apple.product-type.app-extension.messages',
       :sticker_pack         => 'com.apple.product-type.app-extension.messages-sticker-pack',
       :xpc_service          => 'com.apple.product-type.xpc-service',
+      :iap_content          => 'com.apple.product-type.in-app-purchase-content',
     }.freeze
 
     # @return [Hash] The extensions or the various product UTIs.
