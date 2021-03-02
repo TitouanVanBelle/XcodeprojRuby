@@ -72,7 +72,8 @@ module ProjectSpecs
             'inherited_suffix' => 'suffix',
             'FOOS' => %w(a b c d ${i} ${inherited} ${I${e}} ${${i}E}),
             'self_recursive' => 'hi $(self_recursive)',
-            'mutually_recursive' => 'm1: ${mutually_recursive_1} m2: ${mutually_recursive_1}',
+            'mutually_recursive' => 'mn: ${mutually_recursive_nested}',
+            'mutually_recursive_nested' => 'm1: ${mutually_recursive_1} m2: ${mutually_recursive_1}',
             'mutually_recursive_1' => 'mr2=${mutually_recursive_2}',
             'mutually_recursive_2' => 'mr1=${mutually_recursive_1}',
             'mixes_braces_and_parens' => '${ab) $(cd}){})',
@@ -115,9 +116,10 @@ module ProjectSpecs
           @configuration.resolve_build_setting('mixes_braces_and_parens').should == '${ab) $(cd}){})'
         end
 
-        xit 'resolves mutually-recursive references to nil' do
+        it 'resolves mutually-recursive references to nil' do
           @configuration.resolve_build_setting('mutually_recursive_1').should.nil?
           @configuration.resolve_build_setting('mutually_recursive_2').should.nil?
+          @configuration.resolve_build_setting('mutually_recursive_nested').should.nil?
           @configuration.resolve_build_setting('mutually_recursive').should.nil?
         end
       end
@@ -157,6 +159,7 @@ module ProjectSpecs
           'EXCLUDED_SOURCE_FILE_NAMES' => 'foo $(inherited) "YYYYY BOO" h"g" \"ab c\" foo\ bar',
           'FRAMEWORK_SEARCH_PATHS' => 'foo $(inherited) "YYYYY BOO" h"g" \"ab c\" foo\ bar',
           'GCC_PREPROCESSOR_DEFINITIONS' => 'foo $(inherited) "YYYYY BOO" h"g" \"ab c\" foo\ bar',
+          'GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*]' => '$(inherited) SIMULATOR=1',
           'GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS' => 'foo $(inherited) "YYYYY BOO" h"g" \"ab c\" foo\ bar',
           'HEADER_SEARCH_PATHS' => 'foo $(inherited) "YYYYY BOO" h"g" \"ab c\" foo\ bar',
           'INFOPLIST_PREPROCESSOR_DEFINITIONS' => 'foo $(inherited) "YYYYY BOO" h"g" \"ab c\" foo\ bar',
@@ -176,6 +179,7 @@ module ProjectSpecs
             'EXCLUDED_SOURCE_FILE_NAMES' => ['foo', '$(inherited)', '"YYYYY BOO"', 'h"g"', '\\"ab', 'c\\"', 'foo\\ bar'],
             'FRAMEWORK_SEARCH_PATHS' => ['foo', '$(inherited)', '"YYYYY BOO"', 'h"g"', '\\"ab', 'c\\"', 'foo\\ bar'],
             'GCC_PREPROCESSOR_DEFINITIONS' => ['foo', '$(inherited)', '"YYYYY BOO"', 'h"g"', '\\"ab', 'c\\"', 'foo\\ bar'],
+            'GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*]' => ['$(inherited)', 'SIMULATOR=1'],
             'GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS' => ['foo', '$(inherited)', '"YYYYY BOO"', 'h"g"', '\\"ab', 'c\\"', 'foo\\ bar'],
             'HEADER_SEARCH_PATHS' => ['foo', '$(inherited)', '"YYYYY BOO"', 'h"g"', '\\"ab', 'c\\"', 'foo\\ bar'],
             'INFOPLIST_PREPROCESSOR_DEFINITIONS' => ['foo', '$(inherited)', '"YYYYY BOO"', 'h"g"', '\\"ab', 'c\\"', 'foo\\ bar'],

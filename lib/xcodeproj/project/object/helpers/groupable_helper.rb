@@ -148,7 +148,7 @@ module Xcodeproj
             when '<group>'
               object_parent = parent(object)
               if object_parent.isa == 'PBXProject'.freeze
-                object.project.project_dir
+                object.project.project_dir + object.project.root_object.project_dir_path
               else
                 real_path(object_parent)
               end
@@ -205,7 +205,7 @@ module Xcodeproj
           # @return [void]
           #
           def set_path_with_source_tree(object, path, source_tree)
-            path = Pathname.new(path)
+            path = Pathname(path)
             source_tree = normalize_source_tree(source_tree)
             object.source_tree = source_tree
 

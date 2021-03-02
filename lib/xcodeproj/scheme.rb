@@ -9,8 +9,11 @@ require 'xcodeproj/scheme/archive_action'
 
 require 'xcodeproj/scheme/buildable_product_runnable'
 require 'xcodeproj/scheme/buildable_reference'
+require 'xcodeproj/scheme/execution_action'
 require 'xcodeproj/scheme/macro_expansion'
 require 'xcodeproj/scheme/remote_runnable'
+require 'xcodeproj/scheme/send_email_action_content'
+require 'xcodeproj/scheme/shell_script_action_content'
 
 module Xcodeproj
   # This class represents a Scheme document represented by a ".xcscheme" file
@@ -221,7 +224,7 @@ module Xcodeproj
       launch_runnable = BuildableProductRunnable.new(build_target, 0)
       launch_action.buildable_product_runnable = launch_runnable
 
-      profile_runnable = BuildableProductRunnable.new(build_target)
+      profile_runnable = BuildableProductRunnable.new(build_target, 0)
       profile_action.buildable_product_runnable = profile_runnable
 
       macro_exp = MacroExpansion.new(build_target)

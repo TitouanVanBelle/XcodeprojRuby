@@ -11,11 +11,11 @@ module Xcodeproj
       #
       def initialize(node = nil)
         create_xml_element_with_fallback(node, 'TestAction') do
+          self.build_configuration = 'Debug'
           @xml_element.attributes['selectedDebuggerIdentifier'] = 'Xcode.DebuggerFoundation.Debugger.LLDB'
           @xml_element.attributes['selectedLauncherIdentifier'] = 'Xcode.DebuggerFoundation.Launcher.LLDB'
-          @xml_element.add_element('AdditionalOptions')
           self.should_use_launch_scheme_args_env = true
-          self.build_configuration = 'Debug'
+          @xml_element.add_element('Testables')
         end
       end
 
@@ -58,7 +58,7 @@ module Xcodeproj
         string_to_bool(@xml_element.attributes['codeCoverageEnabled'])
       end
 
-      # @rparam [Bool] flag
+      # @param [Bool] flag
       #         Set whether Clang Code Coverage is enabled ('Gather coverage data' turned ON)
       #
       def code_coverage_enabled=(flag)
@@ -74,6 +74,18 @@ module Xcodeproj
         @xml_element.elements['Testables'].get_elements('TestableReference').map do |node|
           TestableReference.new(node)
         end
+      end
+
+      # @param [Array<TestableReference>] testables
+      #         Sets the list of TestableReference (test bundles) associated with this Test Action
+      #
+      def testables=(testables)
+        @xml_element.delete_element('Testables')
+        testables_element = @xml_element.add_element('Testables')
+        testables.each do |testable|
+          testables_element.add_element(testable.xml_element)
+        end
+        testables
       end
 
       # @param [TestableReference] testable
@@ -97,7 +109,11 @@ module Xcodeproj
       #        Add a MacroExpansion to this TestAction
       #
       def add_macro_expansion(macro_expansion)
-        @xml_element.add_element(macro_expansion.xml_element)
+        if testables = @xml_element.elements['Testables']
+          @xml_element.insert_before(testables, macro_expansion.xml_element)
+        else
+          @xml_element.add_element(macro_expansion.xml_element)
+        end
       end
 
       # @return [EnvironmentVariables]
@@ -217,6 +233,13 @@ module Xcodeproj
         #
         def add_buildable_reference(ref)
           @xml_element.add_element(ref.xml_element)
+        end
+
+        # @param [BuildableReference] ref
+        #         The BuildableReference to remove from the list of targets this entry will build
+        #
+        def remove_buildable_reference(ref)
+          @xml_element.delete_element(ref.xml_element)
         end
 
         # @return [Array<Test>]

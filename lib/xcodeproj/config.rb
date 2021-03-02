@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'shellwords'
 require 'xcodeproj/config/other_linker_flags_parser'
 
@@ -157,6 +158,8 @@ module Xcodeproj
       end
     end
 
+    alias_method :to_h, :to_hash
+
     # @return [Set<String>] The list of the frameworks required by this
     #         settings file.
     #
@@ -252,6 +255,7 @@ module Xcodeproj
     # @return [Hash]
     #
     def extract_hash(argument)
+      return argument if argument.is_a?(Hash)
       if argument.respond_to? :read
         @filepath = Pathname.new(argument.to_path)
         hash_from_file_content(argument.read)

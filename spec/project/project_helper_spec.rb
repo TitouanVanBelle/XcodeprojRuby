@@ -10,7 +10,7 @@ module ProjectSpecs
 
     describe 'Targets' do
       it 'creates a new target' do
-        target = @helper.new_target(@project, :static_library, 'Pods', :ios, '6.0', @project.products_group, :objc)
+        target = @helper.new_target(@project, :static_library, 'Pods', :ios, '6.0', @project.products_group, :objc, nil)
         target.name.should == 'Pods'
         target.product_type.should == 'com.apple.product-type.library.static'
 
@@ -28,7 +28,7 @@ module ProjectSpecs
       end
 
       it 'creates a new tvOS target' do
-        target = @helper.new_target(@project, :static_library, 'Pods', :tvos, '9.0', @project.products_group, :objc)
+        target = @helper.new_target(@project, :static_library, 'Pods', :tvos, '9.0', @project.products_group, :objc, nil)
         target.name.should == 'Pods'
         target.product_type.should == 'com.apple.product-type.library.static'
 
@@ -46,7 +46,7 @@ module ProjectSpecs
       end
 
       it 'creates a new watchOS target' do
-        target = @helper.new_target(@project, :static_library, 'Pods', :watchos, '2.0', @project.products_group, :objc)
+        target = @helper.new_target(@project, :static_library, 'Pods', :watchos, '2.0', @project.products_group, :objc, nil)
         target.name.should == 'Pods'
         target.product_type.should == 'com.apple.product-type.library.static'
 
@@ -64,7 +64,7 @@ module ProjectSpecs
       end
 
       it 'uses default build settings for Release and Debug configurations' do
-        target = @helper.new_target(@project, :static_library, 'Pods', :ios, '6.0', @project.products_group, :objc)
+        target = @helper.new_target(@project, :static_library, 'Pods', :ios, '6.0', @project.products_group, :objc, nil)
         debug_settings = @helper.common_build_settings(:debug, :ios, '6.0', :static_library)
         release_settings = @helper.common_build_settings(:release, :ios, '6.0', :static_library)
 
@@ -75,7 +75,7 @@ module ProjectSpecs
       it 'uses default build settings for custom build configurations' do
         @project.add_build_configuration('Foo', :release)
         @project.add_build_configuration('Bar', :debug)
-        target = @helper.new_target(@project, :static_library, 'Pods', :ios, '6.0', @project.products_group, :objc)
+        target = @helper.new_target(@project, :static_library, 'Pods', :ios, '6.0', @project.products_group, :objc, nil)
         debug_settings = @helper.common_build_settings(:debug, :ios, '6.0', :static_library)
         release_settings = @helper.common_build_settings(:release, :ios, '6.0', :static_library)
 
@@ -84,7 +84,7 @@ module ProjectSpecs
       end
 
       it 'creates a new resources bundle' do
-        target = @helper.new_resources_bundle(@project, 'Pods', :ios, @project.products_group)
+        target = @helper.new_resources_bundle(@project, 'Pods', :ios, @project.products_group, nil)
         target.name.should == 'Pods'
         target.product_type.should == 'com.apple.product-type.bundle'
 
@@ -150,12 +150,12 @@ module ProjectSpecs
     describe '::common_build_settings' do
       it 'returns the build settings for an application by default' do
         settings = @helper.common_build_settings(:release, :ios, nil, nil)
-        settings['CODE_SIGN_IDENTITY'].should == 'iPhone Developer'
+        settings['ASSETCATALOG_COMPILER_APPICON_NAME'].should == 'AppIcon'
       end
 
       it 'returns the build settings for an application' do
         settings = @helper.common_build_settings(:release, :ios, nil, Xcodeproj::Constants::PRODUCT_TYPE_UTI[:application])
-        settings['CODE_SIGN_IDENTITY'].should == 'iPhone Developer'
+        settings['ASSETCATALOG_COMPILER_APPICON_NAME'].should == 'AppIcon'
       end
 
       it 'returns the build settings for a bundle' do
